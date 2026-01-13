@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    stages {
+        stage('git-checkout') {
+            steps {
+               git branch: 'main', credentialsId: 'kiit1234', 
+               url: 'https://github.com/LegendarySlayer/jenkins-practice.git'
+            }
+        }
+         stage('clean') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test '
+            }
+        }
+        stage('scanning') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
+                }
+            }
+        }
+        stage('package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+    }
+    post {
+        success {
+            mail to: 'ashutoshjhas250904@gmail.com',
+            subject: 'jenkins job triggered',
+            body: "Your jenkins mail was sucessful\n\nJob Name: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nBuild URL: ${env.BUILD_URL}"
+        }
+    }
+}
