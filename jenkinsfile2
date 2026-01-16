@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    stages {
+         stage('clean') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test '
+            }
+        }
+        stage('scanning') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
+                }
+            }
+        }
+        stage('package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+    }
+}
