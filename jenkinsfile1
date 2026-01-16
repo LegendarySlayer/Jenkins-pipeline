@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('git-checkout') {
             steps {
-               git branch: 'main', credentialsId: 'kiit1234', 
-               url: 'https://github.com/LegendarySlayer/jenkins-practice.git'
+               git branch: 'main', 
+               url: 'https://github.com/LegendarySlayer/spring-petclinic-k8.git'
             }
         }
          stage('clean') {
